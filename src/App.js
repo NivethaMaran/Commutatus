@@ -20,7 +20,6 @@ class App extends Component {
         applications_close_date: '',
         earliest_start_date:'',
         latest_end_date:'',
-        description:''
       },
     }
   }
@@ -97,33 +96,34 @@ class App extends Component {
     });
   }
 
-  editOpportunity(id, title, applications_close_date,earliest_start_date,latest_end_date,description) {
+  editOpportunity(id, title, applications_close_date,earliest_start_date,latest_end_date) {
     this.setState({
-      editOppData: { id, title, applications_close_date,earliest_start_date,latest_end_date,description }, editOppModal: ! this.state.editOppModal
+      editOppData: { id, title, applications_close_date,earliest_start_date,latest_end_date}, editOppModal: ! this.state.editOppModal
     });
   }
   
   updateOpportunity(id) {
-    let { title, applications_close_date, earliest_start_date, latest_end_date, description } = this.state.editOppData;
+    let { title, applications_close_date, earliest_start_date, latest_end_date } = this.state.editOppData;
     console.log("Inside update task")
     console.log(id)
     console.log(applications_close_date)
     axios.patch('https://api-staging.aiesec.org/v2/opportunities/'+id+'?access_token=dd0df21c8af5d929dff19f74506c4a8153d7acd34306b9761fd4a57cfa1d483c&opportunity%5Btitle%5D='
-    +title+'&opportunity[applications_close_date]='+applications_close_date+'&opportunity[earliest_start_date]='+earliest_start_date+'&opportunity[latest_end_date]='+latest_end_date+
-    '&opportunity[description]='+description
+    +title+'&opportunity[applications_close_date]='+applications_close_date+'&opportunity[earliest_start_date]='+earliest_start_date+'&opportunity[latest_end_date]='+latest_end_date
       // title, applications_close_date
     ).then((response) => {
       this._refreshOpportunity();
 
       this.setState({
-        editOppModal: false, editOppData: { id: '', title: '', applications_close_date: '',earliest_start_date: '', latest_end_date:'',description: '' }
+        editOppModal: false, editOppData: { id: '', title: '', applications_close_date: '',earliest_start_date: '', latest_end_date:'' }
       })
     });
   }
 
 
   _refreshOpportunity() {
+
     this.getAllDetails().then((data)=>{this.setState({opportunities:data})})
+    
   }
 
 
@@ -140,7 +140,7 @@ class App extends Component {
           <td>{this.state.selection_process[index]}</td>
           <td>{this.state.salary[index]}</td>
           <td>
-          <Button color="success" size="sm" className="mr-2" onClick={this.editOpportunity.bind(this, opportunity.id, opportunity.title, opportunity.applications_close_date,opportunity.earliest_start_date, opportunity.latest_end_date, opportunity.description)}>Edit</Button>
+          <Button color="success" size="sm" className="mr-2" onClick={this.editOpportunity.bind(this, opportunity.id, opportunity.title, opportunity.applications_close_date,opportunity.earliest_start_date, opportunity.latest_end_date)}>Edit</Button>
           </td>
         </tr>
       )
@@ -196,16 +196,6 @@ class App extends Component {
             }} />
           </FormGroup>
 
-          <FormGroup>
-            <Label for="description">Description</Label>
-            <Input id="description" value={this.state.editOppData.description} onChange={(e) => {
-              let { editOppData } = this.state;
-
-              editOppData.description = e.target.value;
-
-              this.setState({ editOppData });
-            }} />
-          </FormGroup>
 
         </ModalBody>
         <ModalFooter>
